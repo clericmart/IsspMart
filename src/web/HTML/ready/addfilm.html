@@ -1,0 +1,19 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css"/>
+	<base href="http://localhost:8082/MartWeb/" />
+</head>
+<body>
+	<h1>Add film to collection</h1>
+	<form action="addfilm" method="POST">
+	<p>Title:</p>  		<input type="text" name="title" value="Matrix"/>
+	<p>Rating: </p>		<input type="text" name="rating" value="7.6"/>
+	<p>Year: </p>		<input type="text" name="year"  value="1999"/>
+	<p>Genres: </p>		<input type="text" name="genres" value="Fantastic"/>
+	<p>Country: </p>	<input type="text" name="country" value="USA"/>
+	<p>Duration: </p>	<input type="text" name="duration" value="120"/>
+	<p>Description:</p> <input type="text" name="description" value="The most amazing film"/><br><br>
+	<input type="submit" value="ADD" name="addfilm" />
+	</form>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<project name="IsspWeb" basedir="." default="clean">
+	
+	<!-- 
+	==========================================================================
+	==================================PROPERTIES==============================
+	==========================================================================
+	-->
+	
+	<!-- ??? What the difference beetween location & value-->
+	<property name="app.name" 					value="MartWeb" />
+	<property name="application.author" 		value="Martynenko" />
+	<property name="application.version" 		value="0.1" />
+	<property name="path.library" 				location="${basedir}/lib" />
+	<property name="path.java.src" 				location="${basedir}/src/main" />
+	<property name="path.java.web" 				location="${basedir}/src/web" />
+	<property name="path.document" 				location="${basedir}/doc" />
+	<property name="path.java.dataBase" 		location="${basedir}/src/DataBase/ready" />
+	<property name="path.java.HTML" 			location="${path.java.web}/HTML/ready"/>
+	<property name="path.java.JSP"				location="${path.java.web}/JSP/ready"/>
+	<property name="path.java.build" 			location="${basedir}/out/${app.name}" />
+	<property name="path.java.last-build" 		location="${basedir}/out/${app.name}/last" />
+	<property name="path.java.archives" 		location="${basedir}/archives" />
+	<property name="servlet.comfig" 			location="${path.java.web}/configuration" />
+	<property name="tomcat.path" 				location="D:\Java\apache-tomcat-8.0.21-windows-x64\apache-tomcat-8.0.21" />
+	
+	
+	<!-- 
+	==========================================================================
+	==================================TSTAMP==================================
+	==========================================================================
+	-->
+	
+	<tstamp> <!-- Set time ${TODAY} ${DSTAMP} -->
+	    <format property="TODAY_UA"  pattern="d-MMMM-yyyy hh:mm aa"/>
+	    <format property="TODAY_ENG" pattern="d-MMMM-yyyy hh:mm aa" locale="en"/>
+	    <format property="FILE_DATE" pattern="(yyyy_dd_MMMM)" 		locale="en"/>
+	 </tstamp>
+	
+	
+	<!-- 
+	==========================================================================
+	==============================CATALINA====================================
+	==========================================================================
+	-->
+	
+	<path id="project-classpath">
+		<fileset dir="${path.library}"	 includes="*.jar" />
+	</path>
+	
+	<taskdef name="deploy" 		classpathref="project-classpath" 	classname="org.apache.catalina.ant.DeployTask" />
+	<taskdef name="undeploy" 	classpathref="project-classpath" 	classname="org.apache.catalina.ant.UndeployTask"/>
+	
+	<target name="Catalina_deploy" description="deploy Web Application Archive" depends="create-war">
+		<deploy 
+			url="http://localhost:8082/manager/text"
+			username="Cleric"
+			password="flora"
+			war="${path.java.archives}/${app.name}.war"
+			path="/${app.name}"
+		/>
+	</target>
+	
+	<target name="Catalina_undeploy" description="undeploy Web Application Archive">
+			<undeploy
+				url="http://localhost:8082/manager/text"
+				username="Cleric"
+				password="flora"
+				path="/${app.name}"
+			/>
+	</target>
+	
+	<target name="Catalina_redeploy" description="redeploy Web Application Archive" 
+			depends="Catalina_undeploy, Catalina_deploy"/>
+	
+	
+	<!-- 
+	==========================================================================
+	===============================BUILD_PROJECT==============================
+	==========================================================================
+	-->
+	
+	<target name="make_dirs" description="Make directories for files"> 
+		<mkdir dir="${path.java.dataBase}"/>
+		<mkdir dir="${path.java.HTML}"/>
+		<mkdir dir="${path.java.JSP}"/>
+		<mkdir dir="${path.java.archives}"/>
+	</target>
+		
+	<target name="clean" description="Clean build directory task"> 
+		<delete dir="${path.java.build}" />
+	</target>	
+	
+	<target name="prepare" description="Prepare build directory task" depends="clean">
+		<mkdir dir="${path.java.build}"/>
+		<mkdir dir="${path.java.last-build}"/>
+	</target>
+	
+	<target name="compile" depends="prepare">
+		<javac 	srcdir="${path.java.src}" 
+			destdir="${path.java.build}" 
+			target="1.8"
+			source="1.8"
+			debug="yes"
+			includeantruntime="yes"
+			classpathref="project-classpath">
+		</javac>
+	</target>
+	
+	<target name="build" depends="compile">
+			<copy todir="${path.java.last-build}">
+				<fileset dir="${path.java.build}"/>
+			</copy>
+			<delete dir="${path.java.last-build}/last"/>
+	</target>
+	
+	<target name="sort-files-todir" description="Sort file by current dirs">
+		<move todir="${path.java.HTML}" overwrite="yes">
+			<fileset dir="${basedir}">
+				<include name="**/*.html"/>
+			</fileset>
+		</move>
+		<move todir="${path.document}" overwrite="yes">
+			<fileset dir="${basedir}">
+				<include name="**/*.doc"/>
+			</fileset>
+		</move>
+		<move todir="${path.java.JSP}" overwrite="yes">
+			<fileset dir="${basedir}">
+				<include name="**/*.jsp"/>
+			</fileset>
+		</move>
+		<move todir="${path.java.dataBase}" overwrite="yes">
+			<fileset dir="${basedir}">
+				<include name="**/*.db"/>
+			</fileset>
+		</move>	
+	</target>
+	
+	<!-- 
+	==========================================================================
+	===========================ARCHIVE, JAR, WAR==============================
+	==========================================================================
+	-->
+	
+	<target name="zip-project" description="Make zip project" depends="clean">
+		<delete dir="${path.java.archives}" includes="*.zip"></delete>
+		<zip destfile="${path.java.archives}/project_${app.name}_by_${application.author}_${FILE_DATE}.zip" basedir="${basedir}" />
+	</target>
+	
+	<target name="create-jar" description="Create JAR task"	depends="build">
+		<jar destfile="${path.java.archives}/${application.name}.jar" basedir="${path.java.last-build}">
+			<manifest >
+				<attribute name="Create-by" 	value="${application.author}"/>
+				<attribute name="Version:" 		value="${application.version}"/>
+			</manifest>
+		</jar>
+	</target>
+		
+	<target name="create-war" description="Create WAR task"	depends="build">
+		<war destfile="${path.java.archives}/${app.name}.war" webxml="${servlet.comfig}/servlet.xml" >
+			<zipfileset dir="${path.java.HTML}" />
+			<zipfileset dir="${path.java.JSP} " prefix="jsp"/>
+			
+			<classes dir="${path.java.last-build}"/>
+			<lib dir="${path.library}" excludes="servlet-api.jar"/>		
+			<manifest >
+				<attribute name="Create-By" 	value="${application.author}"/>
+				<attribute name="Version" 		value="${application.version}"/>
+			</manifest>		
+		</war>
+	</target>
+	
+	<!-- 
+	==========================================================================
+	==================================TOMCAT==================================
+	==========================================================================
+	 -->
+	<target name="tomcat-start" description="Start Tomcat">
+		<exec dir="${tomcat.path}" executable="${tomcat.path}/bin/startup.bat" spawn="true"/>
+	</target>
+	
+	<target name="tomcat-shutdown" description="Close Tomcat">
+		<exec dir="${tomcat.path}" executable="${tomcat.path}/bin/shutdown.bat" spawn="true"/>
+	</target>
+	
+	<target name="tomcat-reload" description="Reload Tomcat" depends="tomcat-shutdown,tomcat-start"/>
+	
+</project>
