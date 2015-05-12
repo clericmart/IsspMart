@@ -64,7 +64,7 @@ public class Film implements Comparable<Film>{
 	
 	@Override
 	public String toString() {
-		return "[Film:" + getTitle() + " Description:" + getDescription() + " Rationg:" + getRating() + " Year:" + getYear() + " Duration:" + getDuration() + " Gernres:" + getGenres() + " Country:" + getCountry() + "]";
+		return "[Film:" + getTitle() + " Description:" + getDescription() + " Rating:" + getRating() + " Year:" + getYear() + " Duration:" + getDuration() + " Genres:" + getGenres() + " Country:" + getCountry() + "]";
 	}
 
 	@Override
