@@ -18,6 +18,7 @@ public class LoginAdminServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String login = req.getParameter("login");
 		String pass = req.getParameter("password");
+		
 		String adminlogin = getInitParameter("login");
 		String adminPass = getInitParameter("password");
 		if (login.equals(adminlogin) && pass.equals(adminPass)) resp.getWriter().print("OK");
