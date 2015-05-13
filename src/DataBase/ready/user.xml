@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<class>
+   <user id="1">
+      <login>user1</login>
+      <password>blabla</password>
+   </user>
+   <user id="2">
+      <login>user2</login>
+      <password>blabla</password>
+   </user>
+   <user id="3">
+      <login>user3</login>
+      <password>blabla</password>
+   </user>
+   <user id="4">
+      <login>user4</login>
+      <password>blabla</password>
+   </user>
+   <user id="5">
+      <login>user5</login>
+      <password>blabla</password>
+   </user>
+</class>

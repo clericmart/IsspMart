@@ -21,7 +21,7 @@
 	<property name="path.java.last-build" 		location="${basedir}/out/${app.name}/last" />
 	<property name="path.java.archives" 		location="${basedir}/archives" />
 	<property name="servlet.comfig" 			location="${path.java.web}/configuration" />
-	<property name="tomcat.path" 				location="C:\Users\admin\Downloads\apache-tomcat-8.0.21-windows-x64\apache-tomcat-8.0.21" />
+	<property name="tomcat.path" 				location="D:\Java\apache-tomcat-8.0.21-windows-x64\apache-tomcat-8.0.21\" />
 	
 	
 	<!-- 
@@ -53,8 +53,8 @@
 	<target name="Catalina_deploy" description="deploy Web Application Archive" depends="create-war">
 		<deploy 
 			url="http://localhost:8082/manager/text"
-			username="test"
-			password="111"
+			username="Cleric"
+			password="flora"
 			war="${path.java.archives}/${app.name}.war"
 			path="/${app.name}"
 		/>
@@ -63,8 +63,8 @@
 	<target name="Catalina_undeploy" description="undeploy Web Application Archive">
 			<undeploy
 				url="http://localhost:8082/manager/text"
-				username="test"
-				password="111"
+				username="Cleric"
+				password="flora"
 				path="/${app.name}"
 			/>
 	</target>
@@ -86,7 +86,7 @@
 		<mkdir dir="${path.java.archives}"/>
 	</target>
 		
-	<target name="clean" description="Clean build directory task"> 
+	<target name="clean" depends="make_dirs" description="Clean build directory task"> 
 		<delete dir="${path.java.build}" />
 	</target>	
 	
@@ -160,6 +160,9 @@
 		<war destfile="${path.java.archives}/${app.name}.war" webxml="${servlet.comfig}/servlet.xml" >
 			<zipfileset dir="${path.java.HTML}" />
 			<zipfileset dir="${path.java.JSP} " prefix="jsp"/>
+			<fileset dir="${path.java.dataBase}">
+				<include name="*.xml"/>
+			</fileset>
 			
 			<classes dir="${path.java.last-build}"/>
 			<lib dir="${path.library}" excludes="servlet-api.jar"/>		
