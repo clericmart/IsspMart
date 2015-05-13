@@ -21,7 +21,6 @@ public class ParamServlet implements Servlet {
 
 	@Override
 	public ServletConfig getServletConfig() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
