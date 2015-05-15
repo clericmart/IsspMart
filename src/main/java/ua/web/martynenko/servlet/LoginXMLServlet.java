@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+@WebServlet("name1")
 public class LoginXMLServlet extends HttpServlet{
 
 	/**
@@ -34,7 +36,7 @@ public class LoginXMLServlet extends HttpServlet{
 		
 		File inputFile;
 		
-		String s = getInitParameter("user");
+		String s = getInitParameter("user1");
 		
 		if (s == null) inputFile = new File(defaultPath);
 		else inputFile = new File(s);
