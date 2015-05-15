@@ -26,25 +26,36 @@ public class LoginXMLServlet extends HttpServlet{
 			throws ServletException, IOException {
 		String login = req.getParameter("login");
 		String pass = req.getParameter("password");
-		String temp = "";
+		String templogin = "";
+		String temppass = "";
 		String loginxml = "";
 		String passxml = "";
+		String defaultPath = "/user.xml";
 		
-		File inputFile = new File("/user.xml");
-	       
+		File inputFile;
+		
+		String s = getInitParameter("user");
+		
+		if (s == null) inputFile = new File(defaultPath);
+		else inputFile = new File(s);
+		
         try {
         	Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputFile);
 			NodeList n = doc.getElementsByTagName("user");
 			for (int i = 0; i < n.getLength(); i++) {
 				loginxml = n.item(i).getChildNodes().item(1).getTextContent();
 				passxml = n.item(i).getChildNodes().item(3).getTextContent();
-				if (login.equals(loginxml) && pass.equals(passxml)) temp = login;
+				if (login.equals(loginxml) && pass.equals(passxml)) {templogin = login; temppass = pass;}
+				else if (login.equals(loginxml) && !pass.equals(passxml)) templogin = login; 		
 			}	
-		} catch (SAXException | ParserConfigurationException e) {
+		} catch (SAXException | ParserConfigurationException | NullPointerException e) {
 			e.printStackTrace();
+		} finally {
+			
 		}
         
-		if (!temp.equals("")) resp.getWriter().print("Welcome " + login);
+		if (!templogin.equals("") && !temppass.equals("")) resp.getWriter().print("Welcome " + login);
+		else if (!templogin.equals("") && temppass.equals("")) resp.getWriter().print("Please enter correct password");
 		else resp.sendRedirect("login.html");
 		
 		
